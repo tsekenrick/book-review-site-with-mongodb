@@ -1,5 +1,6 @@
 // db.js
 const mongoose = require('mongoose');
+const URLSlugs = require('mongoose-url-slugs');
 
 // schema
 const ReviewSchema = new mongoose.Schema({
@@ -15,7 +16,11 @@ const BookSchema = new mongoose.Schema({
     reviews: [ReviewSchema]
 });
 
+BookSchema.plugin(URLSlugs('title author'));
 mongoose.model("Book", BookSchema);
 mongoose.model("Review", ReviewSchema);
 
-mongoose.connect('mongodb://localhost/hw05');
+mongoose.connect('mongodb://localhost/hw05', {
+    useCreateIndex: true,
+    useNewUrlParser: true
+});

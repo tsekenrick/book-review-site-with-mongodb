@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
-const URLSlugs = require('mongoose-url-slugs');
 const mongoSanitize = require('mongo-sanitize');
 const path = require('path');
 const app = express();
@@ -19,10 +18,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 // another app.use later to handle 404s:
 
-// models and slug definition
+// mongoose models
 const Book = mongoose.model('Book');
 const Review = mongoose.model('Review');
-Book.plugin(URLSlugs('title author'));
 
 app.get('/', (req, res) => {
     res.redirect('/books');
