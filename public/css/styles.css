@@ -1,8 +1,52 @@
+body {
+    background-color: darkslategrey;
+    color: white;
+}
+
 h1 {
-    color: skyblue;
+    color: purple;
+    text-align: center;
+}
+
+h2 {
+    color: goldenrod;
+}
+
+h2.centeredHeader {
+    text-align: center;
+}
+
+#warning {
+    color: grey;
     text-align: center;
 }
 
 div.header {
     position: relative;
+}
+
+div.navLinks {
+    position: relative;
+    text-align: center;
+}
+
+div.form {
+    display: block;
+    text-align: center;
+}
+
+a {
+    text-align: center;
+}
+
+a:visited {
+    color: pink;
+}
+
+a:link {
+    color: pink;
+}
+
+a:hover {
+    color: hotpink;
 }

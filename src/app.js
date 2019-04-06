@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
-const mongoSanitize = require('mongo-sanitize');
+const sanitize = require('mongo-sanitize');
 const path = require('path');
 const app = express();
 require('./db');
@@ -15,7 +15,7 @@ const sessionOptions = {
 app.set('view engine', 'hbs');
 app.use(session(sessionOptions));
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 // another app.use later to handle 404s:
 
 // mongoose models
@@ -27,15 +27,39 @@ app.get('/', (req, res) => {
 });
 
 app.get('/books', (req, res) => {
-    res.render('books');
+    const queryObj = {};
+    if(req.query.filter && req.query.filterVal) {
+        queryObj[req.query.filter] = req.query.filterVal;
+    }
+    Book.find(queryObj, (err, result) => {
+        if(err) { res.render('books', {title: "Could not find books fitting that query."}); }
+        const queryRes = result;
+        res.render('books', {queryRes});
+    });
+    
 });
 
-app.get('/books-new', (req, res) => {
 
+app.get('/books-new', (req, res) => {
+    res.render('newbook');
 });
 
 app.post('/books-new', (req, res) => {
+    const book = new Book({
+        title: sanitize(req.body.title),
+        author: sanitize(req.body.author),
+        isbn: sanitize(req.body.isbn)
+    });
 
+    book.save((err, book) => {
+        if(err) { 
+            const warning = "Uh-oh, we couldn't make your book. Try again?";
+            res.render('newbook', {warning});
+        } else {
+            console.log(`Added ${book} to db`);
+            res.redirect('/');
+        } 
+    });
 });
 
 app.get('/books/:slug', (req, res) => {
