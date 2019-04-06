@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 // another app.use later to handle 404s:
 
+
 // mongoose models
 const Book = mongoose.model('Book');
 const Review = mongoose.model('Review');
@@ -33,12 +34,10 @@ app.get('/books', (req, res) => {
     }
     Book.find(queryObj, (err, result) => {
         if(err) { res.render('books', {title: "Could not find books fitting that query."}); }
-        const queryRes = result;
-        res.render('books', {queryRes});
+        res.render('books', {result});
     });
     
 });
-
 
 app.get('/books-new', (req, res) => {
     res.render('newbook');
@@ -64,14 +63,38 @@ app.post('/books-new', (req, res) => {
 
 app.get('/books/:slug', (req, res) => {
 
+    Book.findOne({slug: sanitize(req.params.slug)}, (err, result) => {
+        if(err) { res.render('books', {title: "Could not find details for that book."}); }
+
+        if(result.reviews.length > 0) {
+            res.render('bookdetails', {result: result, hasReviews: true});
+        } else {
+            res.render('bookdetails', {result: result});
+        }
+    });
 });
 
 app.post('/books/:slug/comments', (req, res) => {
+    const reviewEntry = new Review({
+        name: sanitize(req.body.name),
+        rating: sanitize(req.body.rating),
+        text: sanitize(req.body.text)
+    });
 
+    Book.findOneAndUpdate({slug: sanitize(req.params.slug)}, {$push: {reviews: reviewEntry}}, (err, book, count) => {
+        console.log("failed", err, book, count);
+    });
+
+    res.redirect(`/books/${sanitize(req.params.slug)}`);
 });
 
 app.get('books/mine', (req, res) => {
 
+});
+
+app.use(function(req, res, next){
+    res.status(404);
+    res.render('notfound');
 });
 
 app.listen(3000);

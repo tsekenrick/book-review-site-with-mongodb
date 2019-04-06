@@ -14,7 +14,7 @@
 </div>
 <br><br>
 <ul>
-{{#each queryRes}}
-<li>Title: {{this.title}}&emsp;Author: {{this.author}}&emsp;ISBN: {{this.isbn}}</li>
+{{#each result}}
+<li>Title: <a href="/books/{{this.slug}}">{{this.title}}</a>&emsp;Author: {{this.author}}&emsp;ISBN: {{this.isbn}}</li>
 {{/each}}
 </ul>

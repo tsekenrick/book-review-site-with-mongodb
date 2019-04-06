@@ -50,3 +50,35 @@ a:link {
 a:hover {
     color: hotpink;
 }
+
+input.slider {
+    height: 15px;
+    border-radius: 5px;
+}
+
+/* the concept for using this scheme to render stars was found at
+https://stackoverflow.com/questions/21376113/how-to-repeat-an-item-multiple-times-in-html-or-css */
+
+span {
+    display:block;
+}
+
+span[n="1"]:before {
+   content: "★";
+}
+
+span[n="2"]:before {
+   content: "★★";
+}
+
+span[n="3"]:before {
+   content: "★★★";
+}
+
+span[n="4"]:before {
+   content: "★★★★";
+}
+
+span[n="5"]:before {
+   content: "★★★★★";
+}

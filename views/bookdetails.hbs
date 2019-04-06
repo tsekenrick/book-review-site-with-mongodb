@@ -1,0 +1,20 @@
+<h2 class=centeredHeader>Reviews for {{result.title}} by {{result.author}}</h2>
+
+<div class="form">
+    <form method="POST" action="http://localhost:3000/books/{{result.slug}}/comments">
+        <textarea name="text" cols="60" rows="5"></textarea><br><br>
+        Rating: <input class="slider" type="range" name="rating" min="1" max="5" value="3">
+        Name: <input type="text" name="name" value="">
+        <input type="submit" value="Review!">
+    </form>
+</div>
+
+{{!-- {{#lengthCheck result.reviews 0}} --}}
+{{#if hasReviews}}
+{{#each result.reviews}}
+<h3 style="text-align: center"><span n={{this.rating}}></span><br>{{this.text}} by {{this.name}}</h3>
+{{/each}}
+{{else}}
+<h3 style="text-align: center">No reviews yet!</h3>
+{{/if}}
+{{!-- {{/lengthCheck}} --}}
