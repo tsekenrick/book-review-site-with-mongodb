@@ -16,8 +16,11 @@ app.set('view engine', 'hbs');
 app.use(session(sessionOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
-// another app.use later to handle 404s:
-
+app.use(function(req, res, next) {
+    if(!res.locals.pageCount) { res.locals.pageCount = 0; }
+    if(req.session.pageCount) { res.locals.pageCount += req.session.pageCount; }
+    next();
+});
 
 // mongoose models
 const Book = mongoose.model('Book');
@@ -28,6 +31,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/books', (req, res) => {
+    req.session.pageCount++;
     const queryObj = {};
     if(req.query.filter && req.query.filterVal) {
         queryObj[req.query.filter] = req.query.filterVal;
@@ -40,6 +44,7 @@ app.get('/books', (req, res) => {
 });
 
 app.get('/books-new', (req, res) => {
+    req.session.pageCount++;
     res.render('newbook');
 });
 
@@ -62,7 +67,7 @@ app.post('/books-new', (req, res) => {
 });
 
 app.get('/books/:slug', (req, res) => {
-
+    req.session.pageCount++;
     Book.findOne({slug: sanitize(req.params.slug)}, (err, result) => {
         if(err) { res.render('books', {title: "Could not find details for that book."}); }
 
@@ -88,11 +93,7 @@ app.post('/books/:slug/comments', (req, res) => {
     res.redirect(`/books/${sanitize(req.params.slug)}`);
 });
 
-app.get('books/mine', (req, res) => {
-
-});
-
-app.use(function(req, res, next){
+app.use(function(req, res, next) {
     res.status(404);
     res.render('notfound');
 });

@@ -15,6 +15,11 @@
 <br><br>
 <ul>
 {{#each result}}
-<li>Title: <a href="/books/{{this.slug}}">{{this.title}}</a>&emsp;Author: {{this.author}}&emsp;ISBN: {{this.isbn}}</li>
+<li>Title: <a href="/books/{{this.slug}}">{{this.title}}</a></li>
+    <ul>
+        <li>Author: {{this.author}}</li>
+        <li>ISBN: {{this.isbn}}</li>
+    </ul>
+    <br>
 {{/each}}
 </ul>
