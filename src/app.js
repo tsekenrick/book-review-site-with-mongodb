@@ -69,9 +69,11 @@ app.post('/books-new', (req, res) => {
 app.get('/books/:slug', (req, res) => {
     req.session.pageCount++;
     Book.findOne({slug: sanitize(req.params.slug)}, (err, result) => {
-        if(err) { res.render('books', {title: "Could not find details for that book."}); }
-
-        if(result.reviews.length > 0) {
+        if(result === null) { 
+            res.status(404);
+            res.render('notfound');
+        }  
+        else if(result.reviews.length > 0) {
             res.render('bookdetails', {result: result, hasReviews: true});
         } else {
             res.render('bookdetails', {result: result});
